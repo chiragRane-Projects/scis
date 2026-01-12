@@ -22,6 +22,10 @@ const stockSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "Warehouse",
         required: true
+    },
+    createdBy: {
+        type: String,
+        required: false
     }
 }, {timestamps: true});
 

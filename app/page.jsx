@@ -3,24 +3,24 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { 
-  EyeIcon, 
-  EyeOff, 
-  Box, 
-  Loader2 
+import {
+  EyeIcon,
+  EyeOff,
+  Box,
+  Loader2
 } from "lucide-react"
 
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-
+import { useAuth } from "@/lib/AuthContext"
 import ModeToggle from "@/components/layout/themeToggle"
 
 export default function LoginPage() {
@@ -28,7 +28,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const { login } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -36,45 +36,41 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }), 
-      });
-
-      if (res.ok) {
-        toast.success("Login successful");
-        router.push("/dashboard"); 
+      await login(username, password); 
+      toast.success("Login successful");
+      
+      // Force navigation with window.location for mobile compatibility
+      if (typeof window !== 'undefined') {
+        window.location.href = '/dashboard';
       } else {
-        const errorData = await res.json();
-        toast.error(errorData.message || "Invalid credentials");
+        router.push("/dashboard");
       }
-    } catch (error) {
-      toast.error("Network error. Please try again.");
+    } catch (err) {
+      toast.error(err.message || "Invalid credentials");
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="relative w-full min-h-screen lg:grid lg:grid-cols-2">
       <div className="absolute inset-0 z-0 lg:hidden">
-        <img 
-            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop" 
-            alt="Warehouse Mobile Background" 
-            className="h-full w-full object-cover"
+        <img
+          src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop"
+          alt="Warehouse Mobile Background"
+          className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-zinc-900/60 backdrop-blur-[2px]" />
       </div>
 
       <div className="hidden relative lg:flex flex-col justify-between p-10 text-white dark:border-r bg-zinc-900">
         <div className="absolute inset-0 z-0">
-            <img 
-                src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop" 
-                alt="Warehouse" 
-                className="h-full w-full object-cover opacity-50"
-            />
-            <div className="absolute inset-0 bg-black/60" />
+          <img
+            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop"
+            alt="Warehouse"
+            className="h-full w-full object-cover opacity-50"
+          />
+          <div className="absolute inset-0 bg-black/60" />
         </div>
 
         <div className="relative z-20 flex items-center text-lg font-medium">
@@ -93,9 +89,9 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen py-12 bg-transparent lg:bg-background">
-        
+
         <div className="absolute right-4 top-4 md:right-8 md:top-8 text-white lg:text-foreground">
-            <ModeToggle />
+          <ModeToggle />
         </div>
 
         <div className="mb-6 flex flex-col items-center gap-2 lg:hidden">
@@ -114,17 +110,17 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              
+
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
-                <Input 
-                  id="username" 
-                  placeholder="admin" 
-                  required 
+                <Input
+                  id="username"
+                  placeholder="admin"
+                  required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isLoading}
-                  className="bg-background/50" 
+                  className="bg-background/50"
                 />
               </div>
 

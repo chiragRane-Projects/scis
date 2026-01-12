@@ -31,13 +31,20 @@ export async function POST(req) {
         });
 
         return NextResponse.json(
-            { accessToken: newAccessToken },
+            {
+                accessToken: newAccessToken,
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    role: user.role,
+                },
+            },
             { status: 200 }
         );
     } catch (error) {
         return NextResponse.json(
-      { message: "Token expired or invalid" },
-      { status: 403 }
-    );
+            { message: "Token expired or invalid" },
+            { status: 403 }
+        );
     }
 }

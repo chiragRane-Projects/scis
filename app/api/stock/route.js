@@ -21,7 +21,7 @@ export async function GET(){
 }
 
 export async function POST(req){
-    const {stockName, stockSKU, stockQuantity, stockPerPrice, stockWarehouse} = await req.json();
+    const {stockName, stockSKU, stockQuantity, stockPerPrice, stockWarehouse, createdBy} = await req.json();
     try {
         await connectDB();
 
@@ -36,7 +36,8 @@ export async function POST(req){
             stockSKU,
             stockQuantity,
             stockPerPrice, 
-            stockWarehouse
+            stockWarehouse,
+            createdBy
         })
 
         return NextResponse.json({message: "Stock created", stockId: newStock._id}, {status:201});
