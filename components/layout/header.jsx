@@ -19,11 +19,11 @@ export default function Header(){
 
     const handleLogout = async () => {
         await logout()
-        router.push('/auth/login')
+        router.push('/')
     }
 
     return(
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 ">
             <ModeToggle/>
             
             <DropdownMenu>

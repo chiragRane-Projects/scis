@@ -1,36 +1,36 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
+import { jwtVerify } from 'jose'
 
-export function proxy(req) {
-  const refreshToken = req.cookies.get("refreshToken")?.value;
-  const { pathname } = req.nextUrl;
+const adminOnlyRoutes = ['/reports', '/admin']
 
-  const protectedPaths = [
-    "/dashboard",
-    "/inventory",
-    "/orders",
-    "/warehouse",
-    "/settings",
-    "/analytics",
-  ];
+export async function proxy(request) {
+  const { pathname } = request.nextUrl
 
-  const isProtected = protectedPaths.some((path) =>
-    pathname.startsWith(path)
-  );
+  const isAdminRoute = adminOnlyRoutes.some(route => pathname.startsWith(route))
+  
+  if (isAdminRoute) {
+    try {
+      const refreshToken = request.cookies.get('refreshToken')?.value
+      
+      if (!refreshToken) {
+        return NextResponse.redirect(new URL('/unauthorized', request.url))
+      }
 
-  if (isProtected && !refreshToken) {
-    return NextResponse.redirect(new URL("/", req.url));
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+      const { payload } = await jwtVerify(refreshToken, secret)
+      
+      if (payload.role !== 'admin') {
+        return NextResponse.redirect(new URL('/unauthorized', request.url))
+      }
+      
+    } catch (error) {
+      return NextResponse.redirect(new URL('/unauthorized', request.url))
+    }
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/inventory/:path*",
-    "/orders/:path*",
-    "/warehouse/:path*",
-    "/settings/:path*",
-    "/analytics/:path*",
-  ],
-};
+  matcher: ['/reports/:path*', '/admin/:path*']
+}

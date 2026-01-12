@@ -46,7 +46,7 @@ export function AppSidebar() {
             Smart Inventory
           </span>
         </div>
-        
+
         <SidebarTrigger className="shrink-0" />
       </SidebarHeader>
 
@@ -56,7 +56,7 @@ export function AppSidebar() {
       <SidebarContent className="px-2">
         <SidebarMenu className="gap-1">
           {filteredItems.map((item) => {
-            const Icon = item.icon; 
+            const Icon = item.icon;
             return (
               <SidebarMenuItem key={item.href}>
                 <TooltipProvider>
@@ -70,8 +70,8 @@ export function AppSidebar() {
                       >
                         <Link href={item.href} className="flex items-center gap-3">
                           <Icon className="h-5 w-5 shrink-0" />
-                          
-                          
+
+
                           <span className="whitespace-nowrap overflow-hidden transition-[width,opacity] duration-300 ease-in-out opacity-100 group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:h-0">
                             {item.name}
                           </span>
@@ -88,9 +88,8 @@ export function AppSidebar() {
           })}
         </SidebarMenu>
       </SidebarContent>
-
+      <p className="text-center font-light">Developed By Chirag-Raj</p>
       <SidebarSeparator />
-      
       <SidebarRail />
     </Sidebar>
   );
