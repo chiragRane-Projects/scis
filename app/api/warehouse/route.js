@@ -29,13 +29,13 @@ export async function GET() {
     try {
         await connectDB();
 
-        const warehouse = await Warehouse.find();
+        const warehouses = await Warehouse.find();
 
-        if (warehouse.length === 0) {
-            return NextResponse.json({ message: "No Warehouse Found" }, { status: 404 });
+        if (warehouses.length === 0) {
+            return NextResponse.json({ message: "No warehouses found", warehouses: [] }, { status: 200 });
         }
 
-        return NextResponse.json(warehouse, { status: 200 });
+        return NextResponse.json({ message: "Warehouses found", warehouses }, { status: 200 });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })

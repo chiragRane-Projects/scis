@@ -38,7 +38,7 @@ export default function Inventory(){
             const res = await fetch("/api/warehouse")
             if (!res.ok) throw new Error("Failed to fetch warehouses")
             const data = await res.json()
-            setWarehouses(Array.isArray(data) ? data : [])
+            setWarehouses(data.warehouses || [])
         } catch (error) {
             console.error("Error fetching warehouses:", error)
         }
